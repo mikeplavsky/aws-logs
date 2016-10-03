@@ -6,11 +6,14 @@ let l = new AWS.Lambda();
 let logs = new AWS.CloudWatchLogs();
 
 let config = require("./config.js").config;
+let slack = require("@slack/client");
+
+let channel = new slack.IncomingWebhook(config.slackUrl);
 
 let get_streams = (group) => {
     
     let now = new Date();
-    now.setHours(now.getHours() - 1);
+    now.setMinutes(now.getMinutes() - config.checkInterval);
 
     logs.describeLogStreams({
 
@@ -29,13 +32,28 @@ let get_streams = (group) => {
             return v.lastEventTimestamp >= now;
         });
 
+        let msg = {
+            text: group,
+            attachments: []
+        }
+
         streams.forEach(v => {
+
             console.log(v.logStreamName);
+
+            msg.attachments.push({
+                text: v.logStreamName 
+            });
+
         });
+
+        channel.send(msg);
 
     });
 
 }
+
+module.exports.get_streams = get_streams;
 
 module.exports.groups = (event, context, cb) => {
 
