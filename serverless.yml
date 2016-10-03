@@ -12,17 +12,14 @@ provider:
         Action: "lambda:*"
         Resource: "*"    
 
-custom:
-  writeEnvVars:
-    groups: ${env:LOG_GROUPS}
-
 functions:
   groups:
     handler: handler.groups
+    events:
+        - schedule: rate(15 minutes)
   streams:
     handler: handler.streams
 
 plugins: 
-  - serverless-plugin-write-env-vars
   - serverless-run-function-plugin  
 
