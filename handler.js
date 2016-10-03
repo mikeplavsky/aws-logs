@@ -42,12 +42,15 @@ let get_streams = (group) => {
             console.log(v.logStreamName);
 
             msg.attachments.push({
-                text: v.logStreamName 
+                text: v.logStreamName,
+                color: "good"
             });
 
         });
 
-        channel.send(msg);
+        if (msg.attachments.length > 0){
+            channel.send(msg);
+        }
 
     });
 
