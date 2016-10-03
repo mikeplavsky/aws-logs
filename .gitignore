@@ -1,3 +1,5 @@
 .serverless
 node_modules
 *.swp
+config.js
+event.json
