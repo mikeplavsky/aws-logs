@@ -1,0 +1,23 @@
+{
+  "name": "aws-logs",
+  "version": "0.0.1",
+  "description": "",
+  "main": "handler.js",
+  "dependencies": {
+    "dotenv": "^2.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mikeplavsky/aws-logs.git"
+  },
+  "author": "mikeplavsky",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mikeplavsky/aws-logs/issues"
+  },
+  "homepage": "https://github.com/mikeplavsky/aws-logs#readme"
+}

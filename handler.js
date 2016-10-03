@@ -1,7 +1,7 @@
 'use strict';
 
 // Your first function handler
-module.exports.hello = (event, context, cb) => {
+module.exports.groups = (event, context, cb) => {
 
   var cfg = require('dotenv').config();
 
@@ -13,5 +13,13 @@ module.exports.hello = (event, context, cb) => {
     });
 
 };
+
+module.exports.streams = (event, context, cb) => {
+
+  cb(null, {
+    message: 'Checking streams'
+  });
+
+}
 
 // You can add more handlers here, and reference them in serverless.yml
