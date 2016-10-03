@@ -23,14 +23,12 @@ module.exports.get_streams = (group) => {
             return; 
         }
 
-        data.logStreams.forEach((v) => {
+        let streams = data.logStreams.filter(v => {
+            return v.lastEventTimestamp >= now;
+        });
 
-            if (v.lastEventTimestamp < now) {
-                return;
-            } 
-
+        streams.forEach(v => {
             console.log(v.logStreamName);
-
         });
 
     });
