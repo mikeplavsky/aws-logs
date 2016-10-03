@@ -19,7 +19,8 @@ let get_streams = (group) => {
 
         logGroupName: group,
         descending: true,
-        orderBy: 'LastEventTime'
+        orderBy: 'LastEventTime',
+        limit: 100
 
     },(err, data)=>{
 
@@ -29,7 +30,7 @@ let get_streams = (group) => {
         }
 
         let streams = data.logStreams.filter(v => {
-            return v.lastEventTimestamp >= now;
+            return v.lastIngestionTime >= now;
         });
 
         let msg = {
@@ -48,9 +49,7 @@ let get_streams = (group) => {
 
         });
 
-        if (msg.attachments.length > 0){
-            channel.send(msg);
-        }
+        channel.send(msg);
 
     });
 
