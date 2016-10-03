@@ -1,25 +1,33 @@
 'use strict';
 
-// Your first function handler
+let AWS = require("aws-sdk");
+let l = new AWS.Lambda();
+
 module.exports.groups = (event, context, cb) => {
+    
+    //var cfg = require('dotenv').config();
 
-  var cfg = require('dotenv').config();
+    l.invoke({
 
-  cb(null, { 
-      message: 'Go Serverless v1.0!', 
-      event,
-      context,
-      cfg
+        FunctionName: "aws-logs-prod-streams",
+        InvocationType:'Event',
+        Payload: `{"group":"test 1"}`
+
+    },(err,data) => {
+
+        console.log(err);
+        console.log(data);
+
     });
+    
+    console.log("called it.")
 
 };
 
 module.exports.streams = (event, context, cb) => {
 
-  cb(null, {
-    message: 'Checking streams'
-  });
+    console.log("got it.")
+    console.log(event);
+    console.log("done");
 
 }
-
-// You can add more handlers here, and reference them in serverless.yml
