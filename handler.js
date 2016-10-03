@@ -6,6 +6,9 @@ let l = new AWS.Lambda();
 let logs = new AWS.CloudWatchLogs();
 
 module.exports.get_streams = (group) => {
+    
+    let now = new Date();
+    now.setHours(now.getHours() - 1);
 
     logs.describeLogStreams({
 
@@ -17,12 +20,17 @@ module.exports.get_streams = (group) => {
 
         if (err != null){
             console.log(err);
-            return 
+            return; 
         }
 
         data.logStreams.forEach((v) => {
-            console.log(new Date(v.lastEventTimestamp));
+
+            if (v.lastEventTimestamp < now) {
+                return;
+            } 
+
             console.log(v.logStreamName);
+
         });
 
     });
