@@ -19,8 +19,7 @@ let get_streams = (group) => {
 
         logGroupName: group,
         descending: true,
-        orderBy: 'LastEventTime',
-        limit: 100
+        orderBy: 'LastEventTime'
 
     },(err, data)=>{
 
