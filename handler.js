@@ -10,6 +10,42 @@ let slack = require("@slack/client");
 
 let channel = new slack.IncomingWebhook(config.slackUrl);
 
+let get_events = (group, stream, filter, nextToken=null) => {
+    
+    let startTime = new Date();
+    startTime.setMinutes(
+            startTime.getMinutes() - config.checkInterval);
+
+    console.log(startTime);
+
+    logs.filterLogEvents({
+
+        logGroupName:group,
+        filterPattern:filter,
+        logStreamNames: [stream],
+        startTime: startTime.getTime(),
+        nextToken: nextToken
+
+    },(err,data) => {
+
+        if (err != null){
+            console.log(err);
+            return;
+        }
+
+        console.log(data.events.length);
+
+        console.log(
+                data.events[0].
+                message.
+                match(/{(.*)}/)[0]);
+
+    });
+    
+}
+
+module.exports.get_events = get_events;
+
 let get_streams = (group) => {
     
     let now = new Date();
