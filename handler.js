@@ -12,56 +12,63 @@ let channel = new slack.IncomingWebhook(config.slackUrl);
 
 let get_events = (params) => {
 
-    if (params.stats == null){
-        params.stats = new Set();
-    }
-    
-    let startTime = new Date();
-    startTime.setMinutes(
-            startTime.getMinutes() - config.checkInterval);
+    return new Promise((resolve, reject)=> {
 
-    console.log(startTime);
-
-    logs.filterLogEvents({
-
-        logGroupName: params.group,
-        filterPattern: params.filter,
-        logStreamNames: [params.stream],
-        startTime: startTime.getTime(),
-        nextToken: params.nextToken
-
-    },(err,data) => {
-
-        if (err != null){
-            console.log(err);
-            return;
+        if (params.stats == null){
+            params.stats = new Set();
         }
+        
+        let startTime = new Date();
+        startTime.setMinutes(
+                startTime.getMinutes() - config.checkInterval);
 
-        console.log(data.events.length);
+        console.log(startTime);
 
-        data.events.forEach(x=>{
+        logs.filterLogEvents({
 
-            let s = x.
-                    message.
-                    match(/{(.*)}/)[0];
+            logGroupName: params.group,
+            filterPattern: params.filter,
+            logStreamNames: [params.stream],
+            startTime: startTime.getTime(),
+            nextToken: params.nextToken
 
-            let v = JSON.parse(s);
-            params.stats.add(v[params.field]);
+        },(err,data) => {
+
+            if (err != null){
+
+                console.log(err);
+
+                reject(err);
+                return;
+
+            }
+
+            console.log(data.events.length);
+
+            data.events.forEach(x=>{
+
+                let s = x.
+                        message.
+                        match(/{(.*)}/)[0];
+
+                let v = JSON.parse(s);
+                params.stats.add(v[params.field]);
+
+            });
+
+            if (data.nextToken != null){
+
+                params.nextToken = data.nextToken;
+                get_events(params);
+
+            }
+            else {
+                console.log(params.stats);
+                resolve(params.stats);
+            }
 
         });
-
-        if (data.nextToken != null){
-
-            params.nextToken = data.nextToken;
-            get_events(params);
-
-        }
-        else {
-            console.log(params.stats);
-        }
-
     });
-    
 }
 
 module.exports.get_events = get_events;
