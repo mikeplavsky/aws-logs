@@ -10,7 +10,11 @@ let slack = require("@slack/client");
 
 let channel = new slack.IncomingWebhook(config.slackUrl);
 
-let get_events = (group, stream, filter, nextToken=null) => {
+let get_events = (params) => {
+
+    if (params.stats == null){
+        params.stats = new Set();
+    }
     
     let startTime = new Date();
     startTime.setMinutes(
@@ -20,11 +24,11 @@ let get_events = (group, stream, filter, nextToken=null) => {
 
     logs.filterLogEvents({
 
-        logGroupName:group,
-        filterPattern:filter,
-        logStreamNames: [stream],
+        logGroupName: params.group,
+        filterPattern: params.filter,
+        logStreamNames: [params.stream],
         startTime: startTime.getTime(),
-        nextToken: nextToken
+        nextToken: params.nextToken
 
     },(err,data) => {
 
@@ -35,10 +39,26 @@ let get_events = (group, stream, filter, nextToken=null) => {
 
         console.log(data.events.length);
 
-        console.log(
-                data.events[0].
-                message.
-                match(/{(.*)}/)[0]);
+        data.events.forEach(x=>{
+
+            let s = x.
+                    message.
+                    match(/{(.*)}/)[0];
+
+            let v = JSON.parse(s);
+            params.stats.add(v[params.field]);
+
+        });
+
+        if (data.nextToken != null){
+
+            params.nextToken = data.nextToken;
+            get_events(params);
+
+        }
+        else {
+            console.log(params.stats);
+        }
 
     });
     
