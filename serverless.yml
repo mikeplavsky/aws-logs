@@ -6,19 +6,24 @@ provider:
   stage: prod  
   iamRoleStatements:
       - Effect: "Allow"
-        Action: "logs:DescribeLogStreams"
+        Action: "logs:*"
         Resource: "*"    
       - Effect: "Allow"
         Action: "lambda:*"
         Resource: "*"    
 
 functions:
+
   groups:
     handler: handler.groups
     events:
         - schedule: rate(15 minutes)
+
   streams:
     handler: handler.streams
+
+  events:
+    handler: handler.events  
 
 plugins: 
   - serverless-run-function-plugin  

@@ -28,7 +28,7 @@ test('checking events', t => {
         }
 
         if (data != null) {
-            t.ok(data.size > 0);
+            t.ok(data.length > 0);
         }
 
     });

@@ -16,7 +16,15 @@ module.exports.events = (event, context, cb) => {
 
     res
     .then(d => {
-        cb(null, d);
+        
+        let res = [];
+
+        d.forEach(v=>{
+            res.push(v);
+        });
+
+        cb(null,res);
+
     })
     .catch(err => {
         cb(err);
@@ -34,7 +42,7 @@ let get_events = (params) => {
         
         let startTime = new Date();
         startTime.setMinutes(
-                startTime.getMinutes() - config.checkInterval);
+                startTime.getMinutes() - params.checkInterval);
 
         console.log(startTime);
 
