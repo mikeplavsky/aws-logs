@@ -24,6 +24,7 @@ functions:
 
   events:
     handler: handler.events  
+    timeout: 50
 
 plugins: 
   - serverless-run-function-plugin  
