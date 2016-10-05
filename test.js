@@ -34,3 +34,13 @@ test('checking events', t => {
     });
 
 });
+
+test("checking filtered events", t => {
+
+    t.plan(1);
+
+    h.filteredGroups(null,null,(err,data) => {
+        t.ok(true);
+    });
+
+});

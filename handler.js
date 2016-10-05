@@ -141,6 +141,53 @@ let get_streams = (group) => {
 
 module.exports.get_streams = get_streams;
 
+module.exports.filteredGroups = (event, context, cb) => {
+
+    config.filteredLogGroups.forEach(v=>{
+    
+        l.invoke({
+
+            FunctionName: "aws-logs-prod-events",
+            InvocationType:'RequestResponse',
+            Payload: JSON.stringify(v)
+
+        },(err,data) => {
+
+            if (err != null) {
+                console.log(err);
+                cb(err);
+                return;
+            };
+
+            console.log(v);
+            console.log(data.Payload);
+
+            let msg = {
+                text: `https://${v.stream}/`,
+                attachments: []
+            }
+
+            let d = JSON.parse(data.Payload);
+
+            d.forEach(v => {
+
+                msg.attachments.push({
+                    text: v,
+                    color: "good"
+                });
+
+            });
+
+            channel.send(msg);
+
+        });
+    });
+
+    console.log("called it.")
+    cb(null,"Done");
+
+};
+
 module.exports.groups = (event, context, cb) => {
 
     config.logGroups.forEach(v=>{
