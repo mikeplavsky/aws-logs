@@ -10,6 +10,20 @@ let slack = require("@slack/client");
 
 let channel = new slack.IncomingWebhook(config.slackUrl);
 
+module.exports.events = (event, context, cb) => {
+
+    let res = get_events(event);
+
+    res
+    .then(d => {
+        cb(null, d);
+    })
+    .catch(err => {
+        cb(err);
+    });
+
+};
+
 let get_events = (params) => {
 
     return new Promise((resolve, reject)=> {

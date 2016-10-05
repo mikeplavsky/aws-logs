@@ -5,7 +5,8 @@
   "main": "handler.js",
   "dependencies": {
     "@slack/client": "^3.6.0",
-    "dotenv": "^2.0.0"
+    "dotenv": "^2.0.0",
+    "tape": "^4.6.2"
   },
   "devDependencies": {
     "decache": "^4.1.0"
