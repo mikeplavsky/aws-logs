@@ -15,34 +15,34 @@ module.exports.events = (event, context, cb) => {
     let res = get_events(event);
 
     res
-    .then(d => {
-        
-        let res = [];
+        .then(d => {
 
-        d.forEach(v=>{
-            res.push(v);
+            let res = [];
+
+            d.forEach(v => {
+                res.push(v);
+            });
+
+            cb(null, res);
+
+        })
+        .catch(err => {
+            cb(err);
         });
-
-        cb(null,res);
-
-    })
-    .catch(err => {
-        cb(err);
-    });
 
 };
 
 let get_events = (params) => {
 
-    return new Promise((resolve, reject)=> {
+    return new Promise((resolve, reject) => {
 
-        if (params.stats == null){
+        if (params.stats == null) {
             params.stats = new Set();
         }
-        
+
         let startTime = new Date();
         startTime.setMinutes(
-                startTime.getMinutes() - params.checkInterval);
+            startTime.getMinutes() - params.checkInterval);
 
         console.log(startTime);
 
@@ -54,9 +54,9 @@ let get_events = (params) => {
             startTime: startTime.getTime(),
             nextToken: params.nextToken
 
-        },(err,data) => {
+        }, (err, data) => {
 
-            if (err != null){
+            if (err != null) {
 
                 console.log(err);
 
@@ -67,24 +67,23 @@ let get_events = (params) => {
 
             console.log(data.events.length);
 
-            data.events.forEach(x=>{
+            data.events.forEach(x => {
 
                 let s = x.
-                        message.
-                        match(/{(.*)}/)[0];
+                message.
+                match(/{(.*)}/)[0];
 
                 let v = JSON.parse(s);
                 params.stats.add(v[params.field]);
 
             });
 
-            if (data.nextToken != null){
+            if (data.nextToken != null) {
 
                 params.nextToken = data.nextToken;
                 get_events(params);
 
-            }
-            else {
+            } else {
                 console.log(params.stats);
                 resolve(params.stats);
             }
@@ -96,7 +95,7 @@ let get_events = (params) => {
 module.exports.get_events = get_events;
 
 let get_streams = (group) => {
-    
+
     let now = new Date();
     now.setMinutes(now.getMinutes() - config.checkInterval);
 
@@ -106,11 +105,11 @@ let get_streams = (group) => {
         descending: true,
         orderBy: 'LastEventTime'
 
-    },(err, data)=>{
+    }, (err, data) => {
 
-        if (err != null){
+        if (err != null) {
             console.log(err);
-            return; 
+            return;
         }
 
         let streams = data.logStreams.filter(v => {
@@ -143,15 +142,15 @@ module.exports.get_streams = get_streams;
 
 module.exports.filteredGroups = (event, context, cb) => {
 
-    config.filteredLogGroups.forEach(v=>{
-    
+    config.filteredLogGroups.forEach(v => {
+
         l.invoke({
 
             FunctionName: "aws-logs-prod-events",
-            InvocationType:'RequestResponse',
+            InvocationType: 'RequestResponse',
             Payload: JSON.stringify(v)
 
-        },(err,data) => {
+        }, (err, data) => {
 
             if (err != null) {
                 console.log(err);
@@ -184,21 +183,21 @@ module.exports.filteredGroups = (event, context, cb) => {
     });
 
     console.log("called it.")
-    cb(null,"Done");
+    cb(null, "Done");
 
 };
 
 module.exports.groups = (event, context, cb) => {
 
-    config.logGroups.forEach(v=>{
-    
+    config.logGroups.forEach(v => {
+
         l.invoke({
 
             FunctionName: "aws-logs-prod-streams",
-            InvocationType:'Event',
+            InvocationType: 'Event',
             Payload: `{"group":"${v}"}`
 
-        },(err,data) => {
+        }, (err, data) => {
 
             console.log(err);
             console.log(data);
