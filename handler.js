@@ -32,7 +32,7 @@ module.exports.events = (event, context, cb) => {
 
 };
 
-let get_events_page = (resolve,reject,params) => {
+let get_events_page = (resolve, reject, params) => {
 
     if (params.stats == null) {
         params.stats = new Set();
@@ -91,7 +91,7 @@ let get_events_page = (resolve,reject,params) => {
 let get_events = (params) => {
 
     return new Promise((resolve, reject) => {
-        get_events_page(resolve, reject, params); 
+        get_events_page(resolve, reject, params);
     });
 
 }
