@@ -166,7 +166,7 @@ module.exports.filteredGroups = (event, context, cb) => {
             console.log(data.Payload);
 
             let msg = {
-                text: `https://${v.stream}/`,
+                text: `${v.group}`,
                 attachments: []
             }
 
